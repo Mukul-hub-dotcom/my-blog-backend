@@ -1,8 +1,9 @@
 import express from "express";
+import cors from "cors";
 import { db, connectToDb } from "./db.js";
 const app = express();
 app.use(express.json());
-
+app.use(cors());
 app.post("/:name", (req, res) => {
   const { name } = req.params;
   const upvote = req.body.upvote;
@@ -30,7 +31,7 @@ app.put("/api/articles/:name/upvote", async (req, res) => {
 
   const article = await db.collection("articles").findOne({ name });
   if (article) {
-    res.send(`The ${name} article now has ${article.upvotes} upvotes`);
+    res.json(article);
   } else {
     res.send("That article doesn't exist");
   }
@@ -49,7 +50,7 @@ app.post("/api/articles/:name/comments", async (req, res) => {
   );
   const article = await db.collection("articles").findOne({ name });
   if (article) {
-    res.send(article.comments);
+    res.json(article);
   } else {
     res.send("That article doesn't exist");
   }
